@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <stdlib.h>
 #include <fstream>
 
 #ifdef _WIN32
@@ -11,6 +10,14 @@
 
 using namespace std;
 
+string xorEncryptDecrypt(const string& data, const string& key) {
+    string result = data;
+    for (size_t i = 0; i < data.size(); ++i) {
+        result[i] = data[i] ^ key[i % key.size()];
+    }
+    return result;
+}
+
 void mainmenu();
 
 int choice;
@@ -18,11 +25,11 @@ bool cinfail;
 int confirmation;
 string username, password, password2, line;
 
-void writetofile(string username) {
+void writetofile(const string& username) {
     ofstream writefile;
     string file = username + ".txt";
     writefile.open(file.c_str());
-    writefile << password;
+    writefile << xorEncryptDecrypt(password, username); // Encrypt the password using username as the key
     writefile.close();
     mainmenu();
 }
@@ -41,7 +48,8 @@ void readfile() {
 
     if (file.is_open()) {
         getline(file, line);
-        if (pass == line) {
+        string decryptedPassword = xorEncryptDecrypt(line, username); // Decrypt the stored password using username as the key
+        if (pass == decryptedPassword) {
             cout << "Logged In!" << endl;
         }
         file.close();
