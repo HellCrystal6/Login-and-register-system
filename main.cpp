@@ -18,23 +18,23 @@ string xorEncryptDecrypt(const string& data, const string& key) {
     return result;
 }
 
-void mainmenu();
+void mainMenu();
 
 int choice;
-bool cinfail;
+bool cinFail;
 int confirmation;
 string username, password, password2, line;
 
-void writetofile(const string& username) {
-    ofstream writefile;
+void writeToFile(const string& username) {
+    ofstream writeFile;
     string file = username + ".txt";
-    writefile.open(file.c_str());
-    writefile << xorEncryptDecrypt(password, username); // Encrypt the password using username as the key
-    writefile.close();
-    mainmenu();
+    writeFile.open(file.c_str());
+    writeFile << xorEncryptDecrypt(password, username); // Encrypt the password using the username as the key
+    writeFile.close();
+    mainMenu();
 }
 
-void readfile() {
+void readFile() {
     ifstream file(username + ".txt");
 
     cout << "Enter your username: ";
@@ -48,7 +48,7 @@ void readfile() {
 
     if (file.is_open()) {
         getline(file, line);
-        string decryptedPassword = xorEncryptDecrypt(line, username); // Decrypt the stored password using username as the key
+        string decryptedPassword = xorEncryptDecrypt(line, username); // Decrypt the stored password using the username as the key
         if (pass == decryptedPassword) {
             cout << "Logged In!" << endl;
         }
@@ -56,7 +56,7 @@ void readfile() {
     }
 }
 
-void registerpassword() {
+void registerPassword() {
     cout << "Please enter the password:" << endl;
     cin >> password;
     cout << "Please re-enter your password:" << endl;
@@ -64,26 +64,26 @@ void registerpassword() {
     if (password == password2) {
         cin.clear();
         cin.ignore(10000, '\n');
-        writetofile(username);
+        writeToFile(username);
         exit(1);
     } else {
-        cout << "Sorry, invalid input" << endl;
-        registerpassword();
+        cout << "Sorry, the passwords do not match." << endl;
+        registerPassword();
     }
 }
 
-void registerme() {
+void registerUser() {
     cout << "Please enter your username: " << endl;
     getline(cin, username);
     cout << "\nUsername -  \"" << username << "\"\nConfirm? \n\n[1] Yes\n[2] No" << endl;
     cin >> confirmation;
     if (confirmation == 1) {
-        registerpassword();
+        registerPassword();
     } else {
-        cout << "Sorry, invalid input. Please try again" << endl;
+        cout << "Sorry, invalid input. Please try again." << endl;
         cin.clear();
         cin.ignore(10000, '\n');
-        registerme();
+        registerUser();
     }
 }
 
@@ -91,23 +91,23 @@ void exitProgram() {
     exit(0);
 }
 
-void mainmenu() {
-    cout << "Hello, Would you like to log in or register\n[1] Login\n[2] Register\n[3] Exit" << endl;
+void mainMenu() {
+    cout << "Hello! Would you like to log in or register?\n[1] Login\n[2] Register\n[3] Exit" << endl;
     cin >> choice;
 
     do {
-        cinfail = cin.fail();
+        cinFail = cin.fail();
         cin.clear();
         cin.ignore(10000, '\n');
-    } while (cinfail == true);
+    } while (cinFail == true);
 
     switch (choice) {
         case 1:
-            readfile();
+            readFile();
             break;
 
         case 2:
-            registerme();
+            registerUser();
             break;
 
         case 3:
@@ -117,6 +117,6 @@ void mainmenu() {
 }
 
 int main() {
-    mainmenu();
+    mainMenu();
     return 0;
 }
