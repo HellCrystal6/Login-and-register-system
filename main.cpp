@@ -55,6 +55,8 @@ void readFile() {
         username);  // Decrypt the stored password using the username as the key
     if (pass == decryptedPassword) {
       cout << "Logged In!" << endl;
+    } else {
+      cout << "Wrong password." << endl;
     }
     file.close();
   }
