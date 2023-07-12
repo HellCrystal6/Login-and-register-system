@@ -30,7 +30,8 @@ void writeToFile(const string &username) {
   string file = username + ".txt";
   writeFile.open(file.c_str());
   writeFile << xorEncryptDecrypt(
-      password, username); // Encrypt the password using the username as the key
+      password,
+      username);  // Encrypt the password using the username as the key
   writeFile.close();
   mainMenu();
 }
@@ -51,7 +52,7 @@ void readFile() {
     getline(file, line);
     string decryptedPassword = xorEncryptDecrypt(
         line,
-        username); // Decrypt the stored password using the username as the key
+        username);  // Decrypt the stored password using the username as the key
     if (pass == decryptedPassword) {
       cout << "Logged In!" << endl;
     }
@@ -106,17 +107,17 @@ void mainMenu() {
   } while (cinFail == true);
 
   switch (choice) {
-  case 1:
-    readFile();
-    break;
+    case 1:
+      readFile();
+      break;
 
-  case 2:
-    registerUser();
-    break;
+    case 2:
+      registerUser();
+      break;
 
-  case 3:
-    exitProgram();
-    break;
+    case 3:
+      exitProgram();
+      break;
   }
 }
 
