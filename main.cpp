@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #ifdef _WIN32
 #define CLEAR_COMMAND "cls"
@@ -10,9 +11,9 @@
 
 using namespace std;
 
-string xorEncryptDecrypt(const string &data, const string &key) {
+string xorEncryptDecrypt(const string& data, const string& key) {
   string result = data;
-  for (size_t i = 0; i < data.size(); ++i) {
+  for (string::size_type i = 0; i < data.size(); ++i) {
     result[i] = data[i] ^ key[i % key.size()];
   }
   return result;
@@ -23,12 +24,10 @@ void mainMenu();
 int choice;
 bool cinFail;
 int confirmation;
-string username, password, password2, line;
+string username, line;
 
-void writeToFile(const string &username) {
-  ofstream writeFile;
-  string file = username + ".txt";
-  writeFile.open(file.c_str());
+void writeToFile(const string& username, const string& password) {
+  ofstream writeFile(username + ".txt");
   writeFile << xorEncryptDecrypt(
       password,
       username);  // Encrypt the password using the username as the key
@@ -63,6 +62,7 @@ void readFile() {
 }
 
 void registerPassword() {
+  string password, password2;
   cout << "Please enter the password:" << endl;
   cin >> password;
   cout << "Please re-enter your password:" << endl;
@@ -70,27 +70,29 @@ void registerPassword() {
   if (password == password2) {
     cin.clear();
     cin.ignore(10000, '\n');
-    writeToFile(username);
+    writeToFile(username, password);
     exit(1);
   } else {
     cout << "Sorry, the passwords do not match." << endl;
-    registerPassword();
   }
 }
 
 void registerUser() {
-  cout << "Please enter your username: " << endl;
-  getline(cin, username);
-  cout << "\nUsername -  \"" << username << "\"\nConfirm? \n\n[1] Yes\n[2] No"
-       << endl;
-  cin >> confirmation;
-  if (confirmation == 1) {
-    registerPassword();
-  } else {
-    cout << "Sorry, invalid input. Please try again." << endl;
-    cin.clear();
-    cin.ignore(10000, '\n');
-    registerUser();
+  cin.ignore();
+  while (true) {
+    cout << "Please enter your username: " << endl;
+    getline(cin, username);
+    cout << "\nUsername -  \"" << username << "\"\nConfirm? \n\n[1] Yes\n[2] No"
+         << endl;
+    cin >> confirmation;
+    if (confirmation == 1) {
+      registerPassword();
+      break;
+    } else {
+      cout << "Sorry, invalid input. Please try again." << endl;
+      cin.clear();
+      cin.ignore(10000, '\n');
+    }
   }
 }
 
@@ -102,11 +104,12 @@ void mainMenu() {
        << endl;
   cin >> choice;
 
-  do {
-    cinFail = cin.fail();
+  while (cin.fail()) {
     cin.clear();
     cin.ignore(10000, '\n');
-  } while (cinFail == true);
+    cout << "Invalid input. Please try again: ";
+    cin >> choice;
+  }
 
   switch (choice) {
     case 1:
@@ -119,6 +122,11 @@ void mainMenu() {
 
     case 3:
       exitProgram();
+      break;
+
+    default:
+      cout << "Invalid input. Please try again." << endl;
+      mainMenu();
       break;
   }
 }
